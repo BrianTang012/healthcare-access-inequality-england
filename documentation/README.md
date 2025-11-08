@@ -22,23 +22,27 @@ How does socioeconomic deprivation relate to geographical access to healthcare s
 ### Installation & Setup
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/BrianTang012/healthcare-access-inequality-england.git
 cd healthcare-access-inequality-england
-Install required R packages:
+```
 
-r
-Copy code
-# Run in R console
-required_packages <- c("tidyverse", "haven", "dplyr", "readxl", "GGally", 
-                       "forcats", "stargazer", "lme4", "car", "rstudioapi", 
-                       "knitr", "kableExtra", "showtext", "lmtest")
+2. Install required R packages (run in R console):
+
+```r
+required_packages <- c(
+  "tidyverse", "haven", "dplyr", "readxl", "GGally",
+  "forcats", "stargazer", "lme4", "car", "rstudioapi",
+  "knitr", "kableExtra", "showtext", "lmtest"
+)
 
 new_packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
 if(length(new_packages)) install.packages(new_packages)
-📁 Project Structure
-text
-Copy code
+```
+
+## 📁 Project Structure
+```bash
 healthcare-access-inequality-england/
 ├── 📊 datasets/
 │   ├── Group_7_AHAH_V3_0.csv
@@ -52,113 +56,98 @@ healthcare-access-inequality-england/
 ├── 📜 scripts/
 │   └── R_analysis.R
 └── README.md
-🏃‍♂️ Running the Analysis
-Open the main script in R/RStudio:
+```
 
-text
-Copy code
-scripts/R_analysis.R
-Set your working directory to the project root:
-
-r
-Copy code
+## 🏃‍♂️ Running the Analysis
+Set your working directory in R:
+```r
 setwd("path/to/healthcare-access-inequality-england")
-Run the entire script or execute sections sequentially.
+```
+Then run the main analysis script:
+```r
+source("scripts/R_analysis.R")
+```
 
-Outputs generated in your working directory:
+## 📊 Data Sources
 
-Processed datasets (Group_7_combined_data.csv, Group_7_complete_case.csv)
+| Dataset | Description | Variables Used | Source |
+|---------|------------|----------------|--------|
+| AHAH V3.0 | Access to healthcare services | Distance to GP, hospital, dentist, pharmacy | Consumer Data Research Centre |
+| IoD2019 Income | Income deprivation | Income deprivation numerator | MHCLG |
+| IoD2019 Employment | Employment deprivation | Employment deprivation numerator | MHCLG |
+| IoD2019 Barriers | Housing barriers | Housing affordability indicator | MHCLG |
+| IoD2019 Education | Education deprivation | Education deprivation score | MHCLG |
+| ONS Mid-Year 2015 | Population estimates | All ages population | Office for National Statistics |
+| RUC2011 | Geographic classification | Rural-Urban categories | Office for National Statistics |
 
-Statistical tables (HTML)
+## 🔑 Key Variables
 
-Visualization plots (PNG)
+**Dependent Variable:**  
+- `log_avg_healthcare_distance_2022`: Logarithm of average travel time (minutes) to GP practices, hospitals, dentists, and pharmacies.
 
-📊 Data Sources
-Dataset	Description	Variables Used	Source
-AHAH V3.0	Access to healthcare services	Distance to GP, hospital, dentist, pharmacy	Consumer Data Research Centre
-IoD2019 Income	Income deprivation	Income deprivation numerator	MHCLG
-IoD2019 Employment	Employment deprivation	Employment deprivation numerator	MHCLG
-IoD2019 Barriers	Housing barriers	Housing affordability indicator	MHCLG
-ONS Mid-Year 2015	Population estimates	All ages population	Office for National Statistics
-RUC2011	Geographic classification	Rural-Urban categories	Office for National Statistics
+**Independent Variables:**  
+- `log_income_deprivation_rate_2015`: Logarithm of income deprivation rate (%)  
+- `housing_affordability_score_2016`: Housing affordability indicator (higher = more deprivation)  
+- `rural_urban_class_2011`: Rural-Urban Classification (8 categories)
 
-🔑 Key Variables
-Dependent Variable
+**Created Variables:**  
+- `income_deprivation_rate_2015`  
+- `employment_deprivation_rate_2015`  
+- `avg_healthcare_distance_2022`
 
-log_avg_healthcare_distance_2022
+## 📈 Analysis Approach
 
-Independent Variables
+**Statistical Models:**  
+- Model 1 (Basic): `log(MHSD) ~ log(Income Deprivation Rate)`  
+- Model 2 (Economic Factors): `log(MHSD) ~ log(Income Deprivation Rate) + Housing Affordability Score`  
+- Model 3 (Full Geographic): `log(MHSD) ~ log(Income Deprivation Rate) + Housing Affordability Score + Rural-Urban Classification`
 
-log_income_deprivation_rate_2015
+**Methodological Steps:**  
+1. Merge multiple datasets using LSOA codes.  
+2. Calculate rates and average distances.  
+3. Handle missing values and apply necessary transformations.  
+4. Conduct exploratory analysis (distributions, correlations).  
+5. Perform regression modeling with three nested linear models.  
+6. Check model diagnostics and validate assumptions.
 
-housing_affordability_score_2016
+## 🎯 Key Findings
 
-rural_urban_class_2011
+- **Economic Access Paradox:** More deprived areas have better geographical access to healthcare services.  
+- **Housing Affordability Impact:** Higher scores are associated with shorter travel times (7–12% decrease per unit).  
+- **Geographic Disparities:** Rural areas have much longer travel times; rural village areas are 344% higher than urban.  
+- **Model Performance:** Model 3 explains 53.7% of variance versus 19.3% in Model 2.
 
-Created Variables
+## 📁 Output Files
 
-income_deprivation_rate_2015
+- **Processed Data:** `Group_7_combined_data.csv`, `Group_7_complete_case.csv`  
+- **Visualizations:** Distribution plots, scatter plots with regression lines, diagnostic plots, confidence interval plots (PNG)  
+- **Statistical Outputs:** Summary statistics, regression tables, correlation tests, model diagnostics (HTML)
 
-employment_deprivation_rate_2015
+## ⚠️ Limitations
 
-avg_healthcare_distance_2022
+- Cross-sectional analysis — Cannot establish causality.  
+- Spatial autocorrelation — Some residual patterns may remain.  
+- Temporal mismatch — Variables measured across different years (2015–2022).  
+- Focuses on geographic access, not service quality.  
+- Required removal of incomplete cases.
 
-📈 Analysis Approach
-Statistical Models
-Model 1: log(MHSD) ~ log(Income Deprivation Rate)
+## 🔧 Custom Functions
 
-Model 2: log(MHSD) ~ log(Income Deprivation Rate) + Housing Affordability Score
+- `PointPlot()`  
+- `DistPlot()`  
+- `ConfidencePlot()`  
+- `PartialRegressionPlot()`  
+- `HomoskedasticityPlot()`  
+- `QQPlotModel()`
 
-Model 3: log(MHSD) ~ log(Income Deprivation Rate) + Housing Affordability Score + Rural-Urban Classification
+## 🤝 Contributing
 
-Methodological Steps
-Merge multiple datasets using LSOA codes
+Feel free to fork the repository and submit pull requests. Ensure reproducibility is maintained.
 
-Calculate rates and average distances
+## 📄 License
 
-Handle missing values and transformations
+For academic/research purposes. Cite original data sources appropriately.
 
-Exploratory analysis (distributions, correlations)
+## 📧 Contact
 
-Regression modeling (three nested linear models)
-
-Diagnostic checking (assumption validation)
-
-🎯 Key Findings
-Economic Access Paradox: More deprived areas have better geographical access to healthcare services
-
-Housing Affordability Impact: Higher scores → shorter travel times (7–12% decrease per unit)
-
-Geographic Disparities: Rural areas have much longer travel times; rural village areas 344% higher than urban
-
-Model 3 explains 53.7% of variance (vs 19.3% in Model 2)
-
-📁 Output Files
-Group_7_combined_data.csv, Group_7_complete_case.csv
-
-Distribution plots, scatter plots with regression lines, diagnostic plots, confidence interval plots (PNG)
-
-Summary statistics, regression tables, correlation tests, model diagnostics (HTML)
-
-⚠️ Limitations
-Cross-sectional analysis — Cannot establish causality
-
-Spatial autocorrelation — Some residual patterns may remain
-
-Temporal mismatch — Variables measured across different years (2015–2022)
-
-Focuses on geographic access, not service quality
-
-Required removal of incomplete cases
-
-🔧 Custom Functions
-PointPlot(), DistPlot(), ConfidencePlot(), PartialRegressionPlot(), HomoskedasticityPlot(), QQPlotModel()
-
-🤝 Contributing
-Fork the repo and submit pull requests. Ensure reproducibility is maintained.
-
-📄 License
-Academic/research purposes. Cite original data sources.
-
-📧 Contact
-Open an issue on the GitHub repository.
+Open an issue on the [GitHub repository](https://github.com/BrianTang012/healthcare-access-inequality-england).
