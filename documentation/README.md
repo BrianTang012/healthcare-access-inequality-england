@@ -117,6 +117,19 @@ source("scripts/R_analysis.R")
 - **Geographic Disparities:** Rural areas have much longer travel times; rural village areas are 344% higher than urban.  
 - **Model Performance:** Model 3 explains 53.7% of variance versus 19.3% in Model 2.
 
+## 📊 Interactive Analysis & Visualizations
+
+For interactive visualizations, detailed charts, and exploratory data analysis, view the complete report on RPubs:
+
+**[🔗 View Full Interactive Report on RPubs](https://rpubs.com/BrianTTS/1119474)**
+
+The RPubs report includes:
+- Interactive data visualizations
+- Dynamic regression plots
+- Exploratory data analysis
+- Model diagnostic charts
+- Complete statistical outputs
+
 ## 📁 Output Files
 
 - **Processed Data:** `Group_7_combined_data.csv`, `Group_7_complete_case.csv`  
